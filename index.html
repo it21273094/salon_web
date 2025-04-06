@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KDJ Salon | Luxury Beauty Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#fdf2f8",
+                100: "#fce7f3",
+                200: "#fbcfe8",
+                300: "#f9a8d4",
+                400: "#f472b6",
+                500: "#ec4899",
+                600: "#db2777",
+                700: "#be185d",
+                800: "#9d174d",
+                900: "#831843",
+              },
+              secondary: {
+                50: "#f8fafc",
+                100: "#f1f5f9",
+                200: "#e2e8f0",
+                300: "#cbd5e1",
+                400: "#94a3b8",
+                500: "#64748b",
+                600: "#475569",
+                700: "#334155",
+                800: "#1e293b",
+                900: "#0f172a",
+              },
+            },
+            fontFamily: {
+              sans: ['"Inter"', "sans-serif"],
+              display: ['"Playfair Display"', "serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap");
+
+      .gradient-text {
+        background: linear-gradient(
+          90deg,
+          #ec4899 0%,
+          #db2777 50%,
+          #be185d 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero-pattern {
+        background-image: radial-gradient(
+          circle at 25% 25%,
+          rgba(236, 72, 153, 0.1) 0%,
+          rgba(236, 72, 153, 0) 50%
+        );
+      }
+
+      .floating {
+        animation: floating 6s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      #threejs-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.15;
+      }
+
+      .service-card:hover .service-icon {
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .service-icon {
+        transition: all 0.3s ease;
+      }
+
+      .nav-link {
+        position: relative;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #ec4899, #db2777);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .booking-form input,
+      .booking-form select,
+      .booking-form textarea {
+        transition: all 0.3s ease;
+      }
+
+      .booking-form input:focus,
+      .booking-form select:focus,
+      .booking-form textarea:focus {
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
+      }
+    </style>
+  </head>
+  <body class="bg-white text-secondary-800 font-sans antialiased">
+    <!-- Three.js Background -->
+    <div id="threejs-bg"></div>
+
+    <!-- Preloader -->
+    <div
+      id="preloader"
+      class="fixed inset-0 bg-white z-50 flex items-center justify-center"
+    >
+      <div class="flex flex-col items-center">
+        <div
+          class="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"
+        ></div>
+        <p class="mt-4 text-primary-600 font-medium">Loading KDJ Salon...</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+          <a
+            href="#"
+            class="text-2xl font-bold text-primary-600 flex items-center"
+          >
+            <span class="gradient-text">KDJ</span>
+            <span class="ml-2 text-secondary-800">Salon</span>
+          </a>
+
+          <nav class="hidden md:flex space-x-8">
+            <a
+              href="#home"
+              class="nav-link text-secondary-700 hover:text-primary-600 font-medium"
+              >Home</a
+            >
+            <a
+              href="#about"
+              class="nav-link text-secondary-700 hover:text-primary-600 font-medium"
+              >About</a
+            >
+            <a
+              href="#services"
+              class="nav-link text-secondary-700 hover:text-primary-600 font-medium"
+              >Services</a
+            >
+            <a
+              href="#team"
+              class="nav-link text-secondary-700 hover:text-primary-600 font-medium"
+              >Team</a
+            >
+            <a
+              href="#gallery"
+              class="nav-link text-secondary-700 hover:text-primary-600 font-medium"
+              >Gallery</a
+            >
+            <a
+              href="#contact"
+              class="nav-link text-secondary-700 hover:text-primary-600 font-medium"
+              >Contact</a
+            >
+          </nav>
+
+          <div class="flex items-center space-x-4">
+            <a
+              href="#booking"
+              class="hidden md:block bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-full font-medium transition duration-300 transform hover:scale-105"
+            >
+              Book Now
+            </a>
+            <button
+              id="mobile-menu-button"
+              class="md:hidden text-secondary-700 focus:outline-none"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white py-4 px-6 shadow-lg"
+      >
+        <div class="flex flex-col space-y-4">
+          <a
+            href="#home"
+            class="text-secondary-700 hover:text-primary-600 font-medium"
+            >Home</a
+          >
+          <a
+            href="#about"
+            class="text-secondary-700 hover:text-primary-600 font-medium"
+            >About</a
+          >
+          <a
+            href="#services"
+            class="text-secondary-700 hover:text-primary-600 font-medium"
+            >Services</a
+          >
+          <a
+            href="#team"
+            class="text-secondary-700 hover:text-primary-600 font-medium"
+            >Team</a
+          >
+          <a
+            href="#gallery"
+            class="text-secondary-700 hover:text-primary-600 font-medium"
+            >Gallery</a
+          >
+          <a
+            href="#contact"
+            class="text-secondary-700 hover:text-primary-600 font-medium"
+            >Contact</a
+          >
+          <a
+            href="#booking"
+            class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-full font-medium text-center transition duration-300"
+          >
+            Book Now
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section
+      id="home"
+      class="min-h-screen flex items-center hero-pattern pt-20"
+    >
+      <div class="container mx-auto px-6 py-20">
+        <div class="flex flex-col lg:flex-row items-center">
+          <div
+            class="lg:w-1/2 mb-12 lg:mb-0"
+            data-aos="fade-right"
+            data-aos-duration="800"
+          >
+            <h1
+              class="text-4xl md:text-6xl font-display font-bold text-secondary-900 leading-tight mb-6"
+            >
+              Redefine Your <span class="gradient-text">Beauty</span> With Our
+              Expert Care
+            </h1>
+            <p class="text-lg text-secondary-600 mb-8 max-w-lg">
+              At KDJ Salon, we blend artistry with innovation to create
+              personalized beauty experiences that enhance your natural
+              radiance.
+            </p>
+            <div
+              class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
+            >
+              <a
+                href="#booking"
+                class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-full font-medium text-center transition duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Book Appointment
+              </a>
+              <a
+                href="#services"
+                class="border-2 border-primary-600 text-primary-600 hover:bg-primary-50 px-8 py-3 rounded-full font-medium text-center transition duration-300"
+              >
+                Explore Services
+              </a>
+            </div>
+          </div>
+          <div
+            class="lg:w-1/2 flex justify-center"
+            data-aos="fade-left"
+            data-aos-duration="800"
+          >
+            <div class="relative w-full max-w-md">
+              <div
+                class="absolute -top-8 -left-8 w-32 h-32 bg-primary-100 rounded-full z-0"
+              ></div>
+              <div
+                class="absolute -bottom-8 -right-8 w-32 h-32 bg-primary-100 rounded-full z-0"
+              ></div>
+              <div class="relative z-10 bg-white p-8 rounded-2xl shadow-xl">
+                <div id="p5-sketch" class="w-full h-64"></div>
+                <div class="mt-6">
+                  <h3 class="text-xl font-bold text-secondary-800 mb-2">
+                    Virtual Style Preview
+                  </h3>
+                  <p class="text-secondary-600 mb-4">
+                    Try our virtual styling tool to preview your new look before
+                    your appointment.
+                  </p>
+                  <button
+                    class="text-primary-600 font-medium flex items-center"
+                  >
+                    Try It Now <i class="fas fa-arrow-right ml-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-primary-600 text-white py-12">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div class="p-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="text-4xl font-bold mb-2">10+</div>
+            <div class="text-primary-100">Years Experience</div>
+          </div>
+          <div class="p-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="text-4xl font-bold mb-2">5K+</div>
+            <div class="text-primary-100">Happy Clients</div>
+          </div>
+          <div class="p-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="text-4xl font-bold mb-2">25+</div>
+            <div class="text-primary-100">Professional Staff</div>
+          </div>
+          <div class="p-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="text-4xl font-bold mb-2">50+</div>
+            <div class="text-primary-100">Services Offered</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-secondary-900 mb-4"
+          >
+            Our <span class="gradient-text">Philosophy</span>
+          </h2>
+          <div class="w-20 h-1 bg-primary-600 mx-auto"></div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row items-center">
+          <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12" data-aos="fade-right">
+            <h3 class="text-2xl font-bold text-secondary-800 mb-6">
+              Where Beauty Meets Innovation
+            </h3>
+            <p class="text-secondary-600 mb-6">
+              Founded in 2015, KDJ Salon has grown from a small boutique to
+              Colombo's premier beauty destination. Our founder, Kamala De
+              Silva, envisioned a space where traditional beauty techniques meet
+              cutting-edge technology.
+            </p>
+            <p class="text-secondary-600 mb-6">
+              We believe beauty is about enhancing your unique features, not
+              masking them. Our team of internationally trained professionals
+              stays ahead of trends while maintaining timeless elegance.
+            </p>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center"
+                  >
+                    <i class="fas fa-check text-primary-600 text-xs"></i>
+                  </div>
+                </div>
+                <p class="ml-3 text-secondary-600">
+                  100% organic and cruelty-free products
+                </p>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center"
+                  >
+                    <i class="fas fa-check text-primary-600 text-xs"></i>
+                  </div>
+                </div>
+                <p class="ml-3 text-secondary-600">
+                  Customized treatments for every skin and hair type
+                </p>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center"
+                  >
+                    <i class="fas fa-check text-primary-600 text-xs"></i>
+                  </div>
+                </div>
+                <p class="ml-3 text-secondary-600">
+                  Hygiene and safety as top priorities
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:w-1/2" data-aos="fade-left">
+            <div class="bg-primary-50 p-8 rounded-2xl shadow-md">
+              <div class="relative overflow-hidden rounded-xl h-64 mb-6">
+                <div id="about-visualization" class="w-full h-full"></div>
+              </div>
+              <h4 class="text-xl font-bold text-secondary-800 mb-3">
+                Our Commitment
+              </h4>
+              <p class="text-secondary-600">
+                We invest in continuous education for our staff, source
+                sustainable products, and maintain an environment that makes
+                every client feel valued and pampered.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-primary-50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-secondary-900 mb-4"
+          >
+            Our <span class="gradient-text">Services</span>
+          </h2>
+          <p class="text-secondary-600 max-w-2xl mx-auto">
+            Comprehensive beauty solutions tailored to your unique needs and
+            preferences.
+          </p>
+          <div class="w-20 h-1 bg-primary-600 mx-auto mt-4"></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Hair Services -->
+          <div
+            class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <div class="p-6">
+              <div
+                class="service-icon w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4 mx-auto"
+              >
+                <i class="fas fa-cut text-primary-600 text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-center text-secondary-800 mb-3">
+                Hair Services
+              </h3>
+              <ul class="space-y-2 text-secondary-600">
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Precision Haircuts & Styling</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Professional Coloring & Highlights</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Keratin & Protein Treatments</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Extensions & Weaves</span>
+                </li>
+              </ul>
+              <div class="mt-6 text-center">
+                <span class="text-primary-600 font-bold">From LKR 2,500</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skin Care -->
+          <div
+            class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <div class="p-6">
+              <div
+                class="service-icon w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4 mx-auto"
+              >
+                <i class="fas fa-spa text-primary-600 text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-center text-secondary-800 mb-3">
+                Skin Care
+              </h3>
+              <ul class="space-y-2 text-secondary-600">
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Customized Facials</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Chemical Peels</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Microdermabrasion</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>LED Light Therapy</span>
+                </li>
+              </ul>
+              <div class="mt-6 text-center">
+                <span class="text-primary-600 font-bold">From LKR 3,500</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nail Services -->
+          <div
+            class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <div class="p-6">
+              <div
+                class="service-icon w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4 mx-auto"
+              >
+                <i class="fas fa-hand-sparkles text-primary-600 text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-center text-secondary-800 mb-3">
+                Nail Services
+              </h3>
+              <ul class="space-y-2 text-secondary-600">
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Gel & Acrylic Manicures</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Custom Nail Art</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Paraffin Treatments</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Nail Health Treatments</span>
+                </li>
+              </ul>
+              <div class="mt-6 text-center">
+                <span class="text-primary-600 font-bold">From LKR 1,800</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bridal Packages -->
+          <div
+            class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <div class="p-6">
+              <div
+                class="service-icon w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4 mx-auto"
+              >
+                <i class="fas fa-heart text-primary-600 text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-center text-secondary-800 mb-3">
+                Bridal Packages
+              </h3>
+              <ul class="space-y-2 text-secondary-600">
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Complete Bridal Makeovers</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Bridal Party Packages</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Trial Sessions</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>On-Location Services</span>
+                </li>
+              </ul>
+              <div class="mt-6 text-center">
+                <span class="text-primary-600 font-bold">From LKR 15,000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Men's Grooming -->
+          <div
+            class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <div class="p-6">
+              <div
+                class="service-icon w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4 mx-auto"
+              >
+                <i class="fas fa-male text-primary-600 text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-center text-secondary-800 mb-3">
+                Men's Grooming
+              </h3>
+              <ul class="space-y-2 text-secondary-600">
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Classic & Modern Haircuts</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Beard Trims & Styling</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Hot Towel Shaves</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Facial Treatments</span>
+                </li>
+              </ul>
+              <div class="mt-6 text-center">
+                <span class="text-primary-600 font-bold">From LKR 1,500</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spa Services -->
+          <div
+            class="service-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <div class="p-6">
+              <div
+                class="service-icon w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4 mx-auto"
+              >
+                <i class="fas fa-water text-primary-600 text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-center text-secondary-800 mb-3">
+                Spa Services
+              </h3>
+              <ul class="space-y-2 text-secondary-600">
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Signature Massages</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Body Wraps & Scrubs</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Aromatherapy</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fas fa-check text-primary-500 mt-1 mr-2 text-sm"
+                  ></i>
+                  <span>Detox Treatments</span>
+                </li>
+              </ul>
+              <div class="mt-6 text-center">
+                <span class="text-primary-600 font-bold">From LKR 4,500</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-12 text-center" data-aos="fade-up">
+          <a
+            href="#booking"
+            class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105 shadow-lg"
+          >
+            View All Services
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-secondary-900 mb-4"
+          >
+            Meet Our <span class="gradient-text">Experts</span>
+          </h2>
+          <p class="text-secondary-600 max-w-2xl mx-auto">
+            Our talented team of beauty professionals brings passion and
+            expertise to every service.
+          </p>
+          <div class="w-20 h-1 bg-primary-600 mx-auto mt-4"></div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div
+            class="team-member bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <div class="relative pt-[100%] bg-primary-100">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fas fa-user text-primary-300 text-6xl"></i>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-secondary-800">
+                Kamala De Silva
+              </h3>
+              <p class="text-primary-600 font-medium mb-3">
+                Founder & Master Stylist
+              </p>
+              <p class="text-secondary-600 text-sm">
+                With 15+ years in the industry, Kamala specializes in precision
+                cuts and color correction.
+              </p>
+              <div class="mt-4 flex space-x-3">
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="team-member bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <div class="relative pt-[100%] bg-primary-100">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fas fa-user text-primary-300 text-6xl"></i>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-secondary-800">
+                Dinesh Perera
+              </h3>
+              <p class="text-primary-600 font-medium mb-3">
+                Lead Color Specialist
+              </p>
+              <p class="text-secondary-600 text-sm">
+                Dinesh's innovative coloring techniques have earned him
+                recognition in international competitions.
+              </p>
+              <div class="mt-4 flex space-x-3">
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="team-member bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <div class="relative pt-[100%] bg-primary-100">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fas fa-user text-primary-300 text-6xl"></i>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-secondary-800">
+                Janani Fernando
+              </h3>
+              <p class="text-primary-600 font-medium mb-3">Skincare Expert</p>
+              <p class="text-secondary-600 text-sm">
+                Janani combines dermatological knowledge with holistic
+                approaches for radiant skin.
+              </p>
+              <div class="mt-4 flex space-x-3">
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="team-member bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
+            <div class="relative pt-[100%] bg-primary-100">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fas fa-user text-primary-300 text-6xl"></i>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-secondary-800">Ravi Bandara</h3>
+              <p class="text-primary-600 font-medium mb-3">Master Barber</p>
+              <p class="text-secondary-600 text-sm">
+                Ravi brings traditional barbering techniques with modern styling
+                for the perfect gentleman's cut.
+              </p>
+              <div class="mt-4 flex space-x-3">
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-primary-600 hover:text-primary-800">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-12 text-center" data-aos="fade-up">
+          <a
+            href="#contact"
+            class="inline-block border-2 border-primary-600 text-primary-600 hover:bg-primary-50 px-8 py-3 rounded-full font-medium transition duration-300"
+          >
+            Meet the Rest of Our Team
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-primary-600 text-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl md:text-4xl font-display font-bold mb-4">
+            Client <span class="text-primary-200">Testimonials</span>
+          </h2>
+          <div class="w-20 h-1 bg-white mx-auto"></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            class="bg-white/10 p-8 rounded-xl backdrop-blur-sm"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 rounded-full bg-primary-300 flex items-center justify-center mr-4"
+              >
+                <i class="fas fa-user text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Nimali Rajapakse</h4>
+                <div class="flex text-primary-200">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <p class="text-primary-100">
+              "KDJ Salon transformed my wedding look completely! The team
+              understood exactly what I wanted and executed it perfectly. I've
+              never felt more beautiful."
+            </p>
+          </div>
+
+          <div
+            class="bg-white/10 p-8 rounded-xl backdrop-blur-sm"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 rounded-full bg-primary-300 flex items-center justify-center mr-4"
+              >
+                <i class="fas fa-user text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Sanjay Wijesinghe</h4>
+                <div class="flex text-primary-200">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <p class="text-primary-100">
+              "As someone who's particular about my haircuts, Ravi at KDJ is the
+              only barber I trust. The attention to detail is unmatched in
+              Colombo."
+            </p>
+          </div>
+
+          <div
+            class="bg-white/10 p-8 rounded-xl backdrop-blur-sm"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 rounded-full bg-primary-300 flex items-center justify-center mr-4"
+              >
+                <i class="fas fa-user text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Priyanka Fernando</h4>
+                <div class="flex text-primary-200">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <p class="text-primary-100">
+              "Janani's facials have completely transformed my skin. After years
+              of struggling with acne, I finally have clear, glowing skin thanks
+              to her expertise."
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-secondary-900 mb-4"
+          >
+            Our <span class="gradient-text">Gallery</span>
+          </h2>
+          <p class="text-secondary-600 max-w-2xl mx-auto">
+            Explore the artistry and craftsmanship that defines the KDJ
+            experience.
+          </p>
+          <div class="w-20 h-1 bg-primary-600 mx-auto mt-4"></div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div
+            class="gallery-item relative overflow-hidden rounded-xl aspect-square bg-primary-100 flex items-center justify-center"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <i class="fas fa-cut text-primary-300 text-4xl"></i>
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition duration-300 flex items-center justify-center"
+            >
+              <span class="text-white font-medium">Hair Styling</span>
+            </div>
+          </div>
+          <div
+            class="gallery-item relative overflow-hidden rounded-xl aspect-square bg-primary-100 flex items-center justify-center"
+            data-aos="fade-up"
+            data-aos-delay="150"
+          >
+            <i class="fas fa-spa text-primary-300 text-4xl"></i>
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition duration-300 flex items-center justify-center"
+            >
+              <span class="text-white font-medium">Facials</span>
+            </div>
+          </div>
+          <div
+            class="gallery-item relative overflow-hidden rounded-xl aspect-square bg-primary-100 flex items-center justify-center"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <i class="fas fa-heart text-primary-300 text-4xl"></i>
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition duration-300 flex items-center justify-center"
+            >
+              <span class="text-white font-medium">Bridal</span>
+            </div>
+          </div>
+          <div
+            class="gallery-item relative overflow-hidden rounded-xl aspect-square bg-primary-100 flex items-center justify-center"
+            data-aos="fade-up"
+            data-aos-delay="250"
+          >
+            <i class="fas fa-hand-sparkles text-primary-300 text-4xl"></i>
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition duration-300 flex items-center justify-center"
+            >
+              <span class="text-white font-medium">Nail Art</span>
+            </div>
+          </div>
+          <div
+            class="gallery-item relative overflow-hidden rounded-xl aspect-square bg-primary-100 flex items-center justify-center"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <i class="fas fa-male text-primary-300 text-4xl"></i>
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition duration-300 flex items-center justify-center"
+            >
+              <span class="text-white font-medium">Men's Grooming</span>
+            </div>
+          </div>
+          <div
+            class="gallery-item relative overflow-hidden rounded-xl aspect-square bg-primary-100 flex items-center justify-center"
+            data-aos="fade-up"
+            data-aos-delay="350"
+          >
+            <i class="fas fa-water text-primary-300 text-4xl"></i>
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition duration-300 flex items-center justify-center"
+            >
+              <span class="text-white font-medium">Spa Services</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-12 text-center" data-aos="fade-up">
+          <a
+            href="#"
+            class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105 shadow-lg"
+          >
+            View Full Gallery
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="py-20 bg-primary-50">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col lg:flex-row">
+          <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12" data-aos="fade-right">
+            <h2
+              class="text-3xl md:text-4xl font-display font-bold text-secondary-900 mb-6"
+            >
+              Ready for Your <span class="gradient-text">Transformation?</span>
+            </h2>
+            <p class="text-secondary-600 mb-8">
+              Book your appointment today and experience the KDJ difference. Our
+              online booking system makes scheduling effortless.
+            </p>
+
+            <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+              <h3 class="text-xl font-bold text-secondary-800 mb-4">
+                Salon Hours
+              </h3>
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-secondary-600">Monday - Friday</span>
+                  <span class="font-medium">9:00 AM - 7:00 PM</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-secondary-600">Saturday</span>
+                  <span class="font-medium">9:00 AM - 5:00 PM</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-secondary-600">Sunday</span>
+                  <span class="font-medium">10:00 AM - 4:00 PM</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-primary-100 p-6 rounded-xl">
+              <h3 class="text-xl font-bold text-secondary-800 mb-4">
+                Why Choose Us?
+              </h3>
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <div
+                      class="w-5 h-5 rounded-full bg-primary-600 flex items-center justify-center"
+                    >
+                      <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <p class="ml-3 text-secondary-600">
+                    Flexible scheduling with online booking
+                  </p>
+                </li>
+                <li class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <div
+                      class="w-5 h-5 rounded-full bg-primary-600 flex items-center justify-center"
+                    >
+                      <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <p class="ml-3 text-secondary-600">
+                    Personalized consultations
+                  </p>
+                </li>
+                <li class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <div
+                      class="w-5 h-5 rounded-full bg-primary-600 flex items-center justify-center"
+                    >
+                      <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <p class="ml-3 text-secondary-600">Loyalty rewards program</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lg:w-1/2" data-aos="fade-left">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+              <h3 class="text-2xl font-bold text-secondary-800 mb-6">
+                Book Your Appointment
+              </h3>
+              <form class="booking-form space-y-5">
+                <div>
+                  <label
+                    for="name"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Full Name</label
+                  >
+                  <input
+                    type="text"
+                    id="name"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="email"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Email Address</label
+                  >
+                  <input
+                    type="email"
+                    id="email"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="phone"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Phone Number</label
+                  >
+                  <input
+                    type="tel"
+                    id="phone"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    required
+                  />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      for="service"
+                      class="block text-secondary-700 font-medium mb-2"
+                      >Service</label
+                    >
+                    <select
+                      id="service"
+                      class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                      required
+                    >
+                      <option value="">Select Service</option>
+                      <option value="hair">Hair Services</option>
+                      <option value="skin">Skin Treatments</option>
+                      <option value="nails">Nail Services</option>
+                      <option value="bridal">Bridal Packages</option>
+                      <option value="mens">Men's Grooming</option>
+                      <option value="spa">Spa Services</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      for="stylist"
+                      class="block text-secondary-700 font-medium mb-2"
+                      >Preferred Stylist</label
+                    >
+                    <select
+                      id="stylist"
+                      class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    >
+                      <option value="">Any Stylist</option>
+                      <option value="kamala">Kamala De Silva</option>
+                      <option value="dinesh">Dinesh Perera</option>
+                      <option value="janani">Janani Fernando</option>
+                      <option value="ravi">Ravi Bandara</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      for="date"
+                      class="block text-secondary-700 font-medium mb-2"
+                      >Date</label
+                    >
+                    <input
+                      type="date"
+                      id="date"
+                      class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      for="time"
+                      class="block text-secondary-700 font-medium mb-2"
+                      >Time</label
+                    >
+                    <input
+                      type="time"
+                      id="time"
+                      class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    for="notes"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Special Requests</label
+                  >
+                  <textarea
+                    id="notes"
+                    rows="3"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300 transform hover:scale-105"
+                >
+                  Confirm Booking
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-secondary-900 mb-4"
+          >
+            Get In <span class="gradient-text">Touch</span>
+          </h2>
+          <p class="text-secondary-600 max-w-2xl mx-auto">
+            We'd love to hear from you. Reach out with any questions or special
+            requests.
+          </p>
+          <div class="w-20 h-1 bg-primary-600 mx-auto mt-4"></div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row">
+          <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12" data-aos="fade-right">
+            <div class="bg-primary-50 p-8 rounded-xl">
+              <h3 class="text-2xl font-bold text-secondary-800 mb-6">
+                Contact Information
+              </h3>
+
+              <div class="space-y-6">
+                <div class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center"
+                    >
+                      <i class="fas fa-map-marker-alt text-primary-600"></i>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <h4 class="font-bold text-secondary-800">Our Location</h4>
+                    <p class="text-secondary-600">
+                      123 Beauty Street, Colombo 03, Sri Lanka
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center"
+                    >
+                      <i class="fas fa-phone-alt text-primary-600"></i>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <h4 class="font-bold text-secondary-800">Phone</h4>
+                    <p class="text-secondary-600">+94 11 234 5678</p>
+                    <p class="text-secondary-600">+94 76 789 0123 (WhatsApp)</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center"
+                    >
+                      <i class="fas fa-envelope text-primary-600"></i>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <h4 class="font-bold text-secondary-800">Email</h4>
+                    <p class="text-secondary-600">info@kdjsalon.com</p>
+                    <p class="text-secondary-600">bookings@kdjsalon.com</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center"
+                    >
+                      <i class="fas fa-clock text-primary-600"></i>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <h4 class="font-bold text-secondary-800">Hours</h4>
+                    <p class="text-secondary-600">Mon-Fri: 9:00 AM - 7:00 PM</p>
+                    <p class="text-secondary-600">Sat: 9:00 AM - 5:00 PM</p>
+                    <p class="text-secondary-600">Sun: 10:00 AM - 4:00 PM</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-8">
+                <h4 class="font-bold text-secondary-800 mb-4">Follow Us</h4>
+                <div class="flex space-x-4">
+                  <a
+                    href="#"
+                    class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 hover:bg-primary-200 transition"
+                  >
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 hover:bg-primary-200 transition"
+                  >
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 hover:bg-primary-200 transition"
+                  >
+                    <i class="fab fa-tiktok"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 hover:bg-primary-200 transition"
+                  >
+                    <i class="fab fa-youtube"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:w-1/2" data-aos="fade-left">
+            <div
+              class="bg-white p-8 rounded-xl shadow-md border border-secondary-100"
+            >
+              <h3 class="text-2xl font-bold text-secondary-800 mb-6">
+                Send Us a Message
+              </h3>
+              <form class="space-y-5">
+                <div>
+                  <label
+                    for="contact-name"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Your Name</label
+                  >
+                  <input
+                    type="text"
+                    id="contact-name"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="contact-email"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Email Address</label
+                  >
+                  <input
+                    type="email"
+                    id="contact-email"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="contact-subject"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Subject</label
+                  >
+                  <input
+                    type="text"
+                    id="contact-subject"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="contact-message"
+                    class="block text-secondary-700 font-medium mb-2"
+                    >Message</label
+                  >
+                  <textarea
+                    id="contact-message"
+                    rows="4"
+                    class="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:border-primary-500"
+                    required
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300 transform hover:scale-105"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <div class="h-96 bg-primary-100 relative overflow-hidden">
+      <div id="map" class="absolute inset-0 flex items-center justify-center">
+        <i class="fas fa-map-marked-alt text-primary-300 text-6xl"></i>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-secondary-900 text-white py-12">
+      <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4 flex items-center">
+              <span class="gradient-text">KDJ</span>
+              <span class="ml-2">Salon</span>
+            </h3>
+            <p class="text-secondary-300 mb-4">
+              Redefining beauty with passion, precision, and personalized care
+              since 2015.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="text-secondary-300 hover:text-white transition"
+              >
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a
+                href="#"
+                class="text-secondary-300 hover:text-white transition"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a
+                href="#"
+                class="text-secondary-300 hover:text-white transition"
+              >
+                <i class="fab fa-tiktok"></i>
+              </a>
+              <a
+                href="#"
+                class="text-secondary-300 hover:text-white transition"
+              >
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="#home"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#about"
+                  class="text-secondary-300 hover:text-white transition"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#services"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Services</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#team"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Our Team</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#gallery"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Gallery</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Services</h4>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Hair Styling</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Skin Treatments</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Nail Art</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Bridal Packages</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-secondary-300 hover:text-white transition"
+                  >Men's Grooming</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
+            <p class="text-secondary-300 mb-4">
+              Subscribe to get updates on special offers and beauty tips.
+            </p>
+            <form class="flex">
+              <input
+                type="email"
+                placeholder="Your Email"
+                class="px-4 py-2 rounded-l-lg focus:outline-none text-secondary-800 w-full"
+              />
+              <button
+                type="submit"
+                class="bg-primary-600 hover:bg-primary-700 px-4 py-2 rounded-r-lg"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-secondary-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center"
+        >
+          <p class="text-secondary-400 text-sm">
+            &copy; 2025 KDJ Salon. All rights reserved.
+          </p>
+          <div class="flex space-x-6 mt-4 md:mt-0">
+            <a
+              href="#"
+              class="text-secondary-400 hover:text-white text-sm transition"
+              >Privacy Policy</a
+            >
+            <a
+              href="#"
+              class="text-secondary-400 hover:text-white text-sm transition"
+              >Terms of Service</a
+            >
+            <a
+              href="#"
+              class="text-secondary-400 hover:text-white text-sm transition"
+              >Sitemap</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button
+      id="back-to-top"
+      class="fixed bottom-8 right-8 w-12 h-12 bg-primary-600 text-white rounded-full shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300"
+    >
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+      // Three.js Background
+      document.addEventListener("DOMContentLoaded", function () {
+        // Hide preloader
+        setTimeout(() => {
+          document
+            .getElementById("preloader")
+            .classList.add("opacity-0", "invisible");
+          setTimeout(() => {
+            document.getElementById("preloader").remove();
+          }, 500);
+        }, 1500);
+
+        // Initialize Three.js background
+        const threeBg = document.getElementById("threejs-bg");
+        if (threeBg) {
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+          );
+          const renderer = new THREE.WebGLRenderer({
+            alpha: true,
+            antialias: true,
+          });
+          renderer.setSize(threeBg.clientWidth, threeBg.clientHeight);
+          threeBg.appendChild(renderer.domElement);
+
+          // Create floating particles
+          const particlesGeometry = new THREE.BufferGeometry();
+          const particleCount = 500;
+
+          const posArray = new Float32Array(particleCount * 3);
+          for (let i = 0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+          }
+
+          particlesGeometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(posArray, 3)
+          );
+
+          const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.03,
+            color: 0xec4899,
+            transparent: true,
+            opacity: 0.8,
+          });
+
+          const particlesMesh = new THREE.Points(
+            particlesGeometry,
+            particlesMaterial
+          );
+          scene.add(particlesMesh);
+
+          camera.position.z = 3;
+
+          function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.x += 0.0005;
+            particlesMesh.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+          }
+
+          animate();
+
+          window.addEventListener("resize", () => {
+            camera.aspect = threeBg.clientWidth / threeBg.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(threeBg.clientWidth, threeBg.clientHeight);
+          });
+        }
+
+        // Initialize p5.js sketch
+        const p5Sketch = document.getElementById("p5-sketch");
+        if (p5Sketch) {
+          const sketch = (p) => {
+            p.setup = () => {
+              const canvas = p.createCanvas(
+                p5Sketch.clientWidth,
+                p5Sketch.clientHeight
+              );
+              canvas.parent("p5-sketch");
+              p.noStroke();
+            };
+
+            p.draw = () => {
+              p.clear();
+              p.fill(236, 72, 153, 50);
+
+              // Draw floating shapes
+              const time = p.millis() * 0.001;
+              for (let i = 0; i < 5; i++) {
+                const x = p.width * 0.5 + p.sin(time * 0.5 + i) * 50;
+                const y = p.height * 0.5 + p.cos(time * 0.8 + i) * 30;
+                const size = 30 + p.sin(time * 1.2 + i) * 10;
+
+                if (i % 2 === 0) {
+                  p.ellipse(x, y, size, size);
+                } else {
+                  p.rectMode(p.CENTER);
+                  p.rect(x, y, size, size, 5);
+                }
+              }
+
+              // Draw hair-like curves
+              p.stroke(236, 72, 153, 100);
+              p.strokeWeight(1);
+              p.noFill();
+              for (let i = 0; i < 3; i++) {
+                p.beginShape();
+                for (let x = 0; x <= p.width; x += 10) {
+                  const y =
+                    p.height * 0.7 + p.sin(time * 0.3 + x * 0.02 + i) * 20;
+                  p.vertex(x, y);
+                }
+                p.endShape();
+              }
+            };
+
+            p.windowResized = () => {
+              p.resizeCanvas(p5Sketch.clientWidth, p5Sketch.clientHeight);
+            };
+          };
+
+          new p5(sketch);
+        }
+
+        // About visualization
+        const aboutVisualization = document.getElementById(
+          "about-visualization"
+        );
+        if (aboutVisualization) {
+          const sketch = (p) => {
+            p.setup = () => {
+              const canvas = p.createCanvas(
+                aboutVisualization.clientWidth,
+                aboutVisualization.clientHeight
+              );
+              canvas.parent("about-visualization");
+              p.noStroke();
+            };
+
+            p.draw = () => {
+              p.clear();
+              p.fill(236, 72, 153, 30);
+
+              const time = p.millis() * 0.001;
+              const centerX = p.width * 0.5;
+              const centerY = p.height * 0.5;
+
+              // Draw concentric circles
+              for (let i = 0; i < 3; i++) {
+                const radius = 20 + i * 30 + p.sin(time * 0.5 + i) * 5;
+                p.ellipse(centerX, centerY, radius * 2, radius * 2);
+              }
+
+              // Draw connecting lines
+              p.stroke(236, 72, 153, 100);
+              p.strokeWeight(1);
+              for (let i = 0; i < 8; i++) {
+                const angle = (p.TWO_PI * i) / 8 + time * 0.2;
+                const x1 = centerX + p.cos(angle) * 20;
+                const y1 = centerY + p.sin(angle) * 20;
+                const x2 = centerX + p.cos(angle) * 80;
+                const y2 = centerY + p.sin(angle) * 80;
+                p.line(x1, y1, x2, y2);
+
+                // Draw small circles at ends
+                p.noStroke();
+                p.fill(236, 72, 153, 150);
+                p.ellipse(x1, y1, 8, 8);
+                p.ellipse(x2, y2, 8, 8);
+              }
+            };
+
+            p.windowResized = () => {
+              p.resizeCanvas(
+                aboutVisualization.clientWidth,
+                aboutVisualization.clientHeight
+              );
+            };
+          };
+
+          new p5(sketch);
+        }
+
+        // Map visualization
+        const map = document.getElementById("map");
+        if (map) {
+          const sketch = (p) => {
+            p.setup = () => {
+              const canvas = p.createCanvas(map.clientWidth, map.clientHeight);
+              canvas.parent("map");
+              p.noStroke();
+            };
+
+            p.draw = () => {
+              p.clear();
+
+              // Draw simple map representation
+              const centerX = p.width * 0.5;
+              const centerY = p.height * 0.5;
+
+              // Base shape
+              p.fill(243, 244, 246);
+              p.rect(centerX - 150, centerY - 100, 300, 200, 10);
+
+              // Roads
+              p.stroke(209, 213, 219);
+              p.strokeWeight(8);
+              p.line(centerX - 180, centerY, centerX + 180, centerY);
+              p.line(centerX, centerY - 130, centerX, centerY + 130);
+
+              // Marker
+              p.noStroke();
+              p.fill(236, 72, 153);
+              p.ellipse(centerX + 40, centerY - 30, 20, 20);
+              p.fill(255);
+              p.textSize(12);
+              p.text("KDJ", centerX + 40, centerY - 30);
+            };
+
+            p.windowResized = () => {
+              p.resizeCanvas(map.clientWidth, map.clientHeight);
+            };
+          };
+
+          new p5(sketch);
+        }
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        if (mobileMenuButton && mobileMenu) {
+          mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+          });
+        }
+
+        // Back to top button
+        const backToTopButton = document.getElementById("back-to-top");
+        if (backToTopButton) {
+          window.addEventListener("scroll", () => {
+            if (window.pageYOffset > 300) {
+              backToTopButton.classList.remove("opacity-0", "invisible");
+              backToTopButton.classList.add("opacity-100", "visible");
+            } else {
+              backToTopButton.classList.remove("opacity-100", "visible");
+              backToTopButton.classList.add("opacity-0", "invisible");
+            }
+          });
+
+          backToTopButton.addEventListener("click", () => {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute("href");
+            if (targetId === "#") return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: "smooth",
+              });
+
+              // Close mobile menu if open
+              if (!mobileMenu.classList.contains("hidden")) {
+                mobileMenu.classList.add("hidden");
+              }
+            }
+          });
+        });
+
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+          duration: 800,
+          once: true,
+          easing: "ease-in-out",
+        });
+
+        // Form submission handling
+        const forms = document.querySelectorAll("form");
+        forms.forEach((form) => {
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            // Here you would typically send the form data to a server
+            alert("Thank you for your message! We will get back to you soon.");
+            this.reset();
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
